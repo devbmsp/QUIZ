@@ -3,6 +3,7 @@ package question.skill.quiz
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.compose.ui.unit.sp
 import androidx.activity.ComponentActivity
@@ -137,6 +138,7 @@ fun QuestionGameScreen(
     questionImages: List<Int>,
     modifier: Modifier = Modifier
 ) {
+    var enabled by remember { mutableStateOf(true) }
     var currentQuestionIndex by remember { mutableStateOf(0) }
     var shuffledOptions by remember { mutableStateOf(options[currentQuestionIndex].shuffled()) }
     var showResult by remember { mutableStateOf(false) }
@@ -155,15 +157,23 @@ fun QuestionGameScreen(
     }
 
     fun calculateScore(selectedOption: String) {
+        enabled = false
         val timeTaken = System.currentTimeMillis() - startTime
         isCorrect = selectedOption == correctAnswers[currentQuestionIndex]
         if (isCorrect) {
+            var mediaPlayer = MediaPlayer.create(context, R.raw.acerto)
+            mediaPlayer.start()
             score += if (timeTaken < 10000) 15 else 10
+        }
+        else {
+            var mediaPlayer = MediaPlayer.create(context, R.raw.erro)
+            mediaPlayer.start()
         }
         showResult = true
     }
 
     fun nextQuestion() {
+        enabled = true
         if (currentQuestionIndex < questions.size - 1) {
             currentQuestionIndex++
             shuffledOptions = options[currentQuestionIndex].shuffled()
@@ -218,6 +228,7 @@ fun QuestionGameScreen(
                 shuffledOptions.forEach { option ->
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
+                        enabled = enabled,
                         onClick = {
                             calculateScore(option)
                         },
