@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.compose.ui.unit.sp
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,9 +24,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
-import com.google.gson.Gson
 import question.skill.quiz.ui.theme.QuizTheme
+
+// Defina as constantes e a classe de dados
+const val ENTRY_DELIMITER = "|"
+const val FIELD_DELIMITER = ","
+
+data class LeaderboardEntryClass(val name: String, val score: Int)
 
 class LeaderboardScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,12 +111,20 @@ fun LeaderboardContent() {
 }
 
 fun loadLeaderboard(sharedPreferences: SharedPreferences): List<LeaderboardEntry> {
-    val gson = Gson()
-    val leaderboardJson = sharedPreferences.getString("leaderboard_data", null)
-    val type = object : com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken<List<LeaderboardEntry>>() {}.type
-    return if (leaderboardJson != null) {
-        gson.fromJson(leaderboardJson, type)
-    } else {
-        emptyList()
+    val leaderboardData = sharedPreferences.getString("leaderboard_data", "") ?: ""
+    if (leaderboardData.isEmpty()) {
+        return emptyList()
+    }
+
+    val entries = leaderboardData.split(ENTRY_DELIMITER)
+    return entries.mapNotNull { entry ->
+        val fields = entry.split(FIELD_DELIMITER)
+        if (fields.size == 2) {
+            val name = fields[0]
+            val score = fields[1].toIntOrNull() ?: return@mapNotNull null
+            LeaderboardEntry(name, score)
+        } else {
+            null
+        }
     }
 }

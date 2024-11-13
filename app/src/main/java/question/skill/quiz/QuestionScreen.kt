@@ -24,8 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
-import com.google.gson.Gson
 import question.skill.quiz.ui.theme.QuizTheme
 
 data class LeaderboardEntry(val name: String, val score: Int)
@@ -37,6 +35,7 @@ class QuestionScreen : ComponentActivity() {
         setContent {
             QuizTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    // Listas originais
                     val questions = listOf(
                         "Qual é o tipo secundário do Pokémon Gyarados, além do tipo Water?",
                         "Em qual geração foi introduzido o tipo Dark?",
@@ -52,8 +51,8 @@ class QuestionScreen : ComponentActivity() {
                         "Em qual geração foi introduzida a mecânica de Mega Evolução?",
                         "Qual é a habilidade única de Shedinja que permite que ele só seja atingido por golpes que são super efetivos?",
                         "Qual item é necessário para evoluir o Pokémon Sneasel em Weavile?",
-                        "Qual Pokémon do tipo Ghost/Dragon foi introduzido na quarta geração como parte do trio lendário \"Creation Trio\"?",
-                    ).shuffled()
+                        "Qual Pokémon do tipo Ghost/Dragon foi introduzido na quarta geração como parte do trio lendário \"Creation Trio\"?"
+                    )
 
                     val options = listOf(
                         listOf("Flying", "Dragon", "Poison", "Ground"),
@@ -70,7 +69,7 @@ class QuestionScreen : ComponentActivity() {
                         listOf("Sexta geração", "Quarta geração", "Quinta geração", "Sétima geração"),
                         listOf("Wonder Guard", "Magic Guard", "Levitate", "Pressure"),
                         listOf("Razor Claw", "Razor Fang", "Black Belt", "Metal Coat"),
-                        listOf("Giratina", "Palkia", "Dialga", "Darkrai"),
+                        listOf("Giratina", "Palkia", "Dialga", "Darkrai")
                     )
 
                     val correctAnswers = listOf(
@@ -81,7 +80,7 @@ class QuestionScreen : ComponentActivity() {
                         "Mewtwo",
                         "Thunderbolt",
                         "Eevee",
-                        "King’s Rock",
+                        "King's Rock",
                         "Levitate",
                         "Deoxys",
                         "Bug Buzz",
@@ -91,10 +90,36 @@ class QuestionScreen : ComponentActivity() {
                         "Giratina"
                     )
 
+                    val questionImages = listOf(
+                        R.drawable.question1,
+                        R.drawable.question2,
+                        R.drawable.question3,
+                        R.drawable.question4,
+                        R.drawable.question5,
+                        R.drawable.question6,
+                        R.drawable.question7,
+                        R.drawable.question8,
+                        R.drawable.question9,
+                        R.drawable.question10,
+                        R.drawable.question11,
+                        R.drawable.question12,
+                        R.drawable.question13,
+                        R.drawable.question14,
+                        R.drawable.question15
+                    )
+
+                    // Embaralha as listas juntas
+                    val indices = questions.indices.toList().shuffled()
+                    val shuffledQuestions = indices.map { questions[it] }
+                    val shuffledOptions = indices.map { options[it] }
+                    val shuffledCorrectAnswers = indices.map { correctAnswers[it] }
+                    val shuffledQuestionImages = indices.map { questionImages[it] }
+
                     QuestionGameScreen(
-                        questions,
-                        options,
-                        correctAnswers,
+                        shuffledQuestions,
+                        shuffledOptions,
+                        shuffledCorrectAnswers,
+                        shuffledQuestionImages,
                         Modifier.padding(innerPadding)
                     )
                 }
@@ -109,6 +134,7 @@ fun QuestionGameScreen(
     questions: List<String>,
     options: List<List<String>>,
     correctAnswers: List<String>,
+    questionImages: List<Int>,
     modifier: Modifier = Modifier
 ) {
     var currentQuestionIndex by remember { mutableStateOf(0) }
@@ -123,25 +149,6 @@ fun QuestionGameScreen(
 
     var userName by remember { mutableStateOf("") }
     var isNameSaved by remember { mutableStateOf(false) }
-
-    val questionImages = listOf(
-        R.drawable.question1,
-        R.drawable.question2,
-        R.drawable.question3,
-        R.drawable.question4,
-        R.drawable.question5,
-        R.drawable.question6,
-        R.drawable.question7,
-        R.drawable.question8,
-        R.drawable.question9,
-        R.drawable.question10,
-        R.drawable.question11,
-        R.drawable.question12,
-        R.drawable.question13,
-        R.drawable.question14,
-        R.drawable.question15,
-
-    )
 
     fun startTimer() {
         startTime = System.currentTimeMillis()
@@ -169,6 +176,7 @@ fun QuestionGameScreen(
 
     LaunchedEffect(currentQuestionIndex) {
         startTimer()
+        shuffledOptions = options[currentQuestionIndex].shuffled()
     }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -308,17 +316,13 @@ fun QuestionGameScreen(
 }
 
 fun saveScore(sharedPreferences: SharedPreferences, name: String, score: Int) {
-    val gson = Gson()
-    val leaderboardJson = sharedPreferences.getString("leaderboard_data", null)
-    val type = object : TypeToken<MutableList<LeaderboardEntry>>() {}.type
-    val leaderboard: MutableList<LeaderboardEntry> = if (leaderboardJson != null) {
-        gson.fromJson(leaderboardJson, type)
+    val leaderboardData = sharedPreferences.getString("leaderboard_data", "") ?: ""
+    val safeName = name.replace("|", "").replace(",", "")
+    val newEntry = "$safeName,$score"
+    val updatedLeaderboardData = if (leaderboardData.isEmpty()) {
+        newEntry
     } else {
-        mutableListOf()
+        "$leaderboardData|$newEntry"
     }
-
-    leaderboard.add(LeaderboardEntry(name, score))
-
-    val updatedJson = gson.toJson(leaderboard)
-    sharedPreferences.edit().putString("leaderboard_data", updatedJson).apply()
+    sharedPreferences.edit().putString("leaderboard_data", updatedLeaderboardData).apply()
 }
