@@ -12,28 +12,39 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Quiz"
         tools:targetApi="31">
+
+        <activity
+            android:name=".SplashScreen"
+            android:label="SplashScreen"
+            android:theme="@style/Theme.Transparent"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- MainMenuScreen as the main menu activity after SplashScreen -->
+        <activity
+            android:name=".MainMenuScreen"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Quiz">
+        </activity>
+
         <activity
             android:name=".QuestionScreen"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Quiz">
         </activity>
-        <activity
-        android:name=".MainMenuScreen"
-        android:exported="true"
-        android:label="@string/app_name"
-        android:theme="@style/Theme.Quiz">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-        </activity>
         <activity
             android:name=".LeaderboardScreen"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Quiz"></activity>
+            android:theme="@style/Theme.Quiz">
+        </activity>
     </application>
 
 </manifest>
