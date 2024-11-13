@@ -91,7 +91,6 @@ fun LeaderboardContent() {
 
                 Button(
                     onClick = {
-                        // Volta ao menu principal
                         val intent = Intent(context, MainMenuScreen::class.java)
                         context.startActivity(intent)
                     },

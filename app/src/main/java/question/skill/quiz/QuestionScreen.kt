@@ -38,21 +38,57 @@ class QuestionScreen : ComponentActivity() {
             QuizTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val questions = listOf(
-                        "Qual é a capital do Brasil?",
-                        "Qual é a maior floresta tropical do mundo?",
-                        "Qual é o planeta mais próximo do Sol?"
-                    ).shuffled() // Embaralha as perguntas
+                        "Qual é o tipo secundário do Pokémon Gyarados, além do tipo Water?",
+                        "Em qual geração foi introduzido o tipo Dark?",
+                        "Qual Pokémon é necessário para obter uma Prism Scale para evoluir Feebas em Milotic?",
+                        "Em qual cidade da região de Kanto se encontra o ginásio de tipo Psychic, liderado por Sabrina?",
+                        "Qual Pokémon é conhecido como \"The Genetic Pokémon\" e é um clone de Mew?",
+                        "Qual golpe, que Ash usa frequentemente com seu Pikachu, é do tipo Electric e tem a habilidade de paralisar o oponente?",
+                        "Qual Pokémon pode evoluir para três tipos diferentes (Vaporeon, Jolteon ou Flareon) na primeira geração?",
+                        "Qual item é necessário para evoluir o Pokémon Poliwhirl em Politoed?",
+                        "Qual a habilidade que garante imunidade a golpes do tipo Ground?",
+                        "Qual Pokémon tem as formas de Attack, Defense, Speed e Normal, dependendo da sua localização?",
+                        "Qual é o golpe do tipo Bug que pode reduzir a Special Defense do oponente e foi introduzido na terceira geração?",
+                        "Em qual geração foi introduzida a mecânica de Mega Evolução?",
+                        "Qual é a habilidade única de Shedinja que permite que ele só seja atingido por golpes que são super efetivos?",
+                        "Qual item é necessário para evoluir o Pokémon Sneasel em Weavile?",
+                        "Qual Pokémon do tipo Ghost/Dragon foi introduzido na quarta geração como parte do trio lendário \"Creation Trio\"?",
+                    ).shuffled()
 
                     val options = listOf(
-                        listOf("São Paulo", "Rio de Janeiro", "Brasília", "Salvador"),
-                        listOf("Amazônia", "Congo", "Sibéria", "Daintree"),
-                        listOf("Vênus", "Terra", "Mercúrio", "Marte")
+                        listOf("Flying", "Dragon", "Poison", "Ground"),
+                        listOf("Segunda geração", "Primeira geração", "Terceira geração", "Quarta geração"),
+                        listOf("Feebas", "Gyarados", "Magikarp", "Lapras"),
+                        listOf("Saffron City", "Celadon City", "Cerulean City", "Fuchsia City"),
+                        listOf("Mewtwo", "Mew", "Ditto", "Genesect"),
+                        listOf("Thunderbolt", "Thunder Shock", "Iron Tail", "Volt Tackle"),
+                        listOf("Eevee", "Pikachu", "Clefairy", "Meowth"),
+                        listOf("King's Rock", "Water Stone", "Moon Stone", "Sun Stone"),
+                        listOf("Levitate", "Sturdy", "Intimidate", "Mold Breaker"),
+                        listOf("Deoxys", "Castform", "Rotom", "Arceus"),
+                        listOf("Bug Buzz", "Leech Life", "X-Scissor", "Signal Beam"),
+                        listOf("Sexta geração", "Quarta geração", "Quinta geração", "Sétima geração"),
+                        listOf("Wonder Guard", "Magic Guard", "Levitate", "Pressure"),
+                        listOf("Razor Claw", "Razor Fang", "Black Belt", "Metal Coat"),
+                        listOf("Giratina", "Palkia", "Dialga", "Darkrai"),
                     )
 
                     val correctAnswers = listOf(
-                        "Brasília",
-                        "Amazônia",
-                        "Mercúrio"
+                        "Flying",
+                        "Segunda geração",
+                        "Feebas",
+                        "Saffron City",
+                        "Mewtwo",
+                        "Thunderbolt",
+                        "Eevee",
+                        "King’s Rock",
+                        "Levitate",
+                        "Deoxys",
+                        "Bug Buzz",
+                        "Sexta geração",
+                        "Wonder Guard",
+                        "Razor Claw",
+                        "Giratina"
                     )
 
                     QuestionGameScreen(
@@ -106,9 +142,9 @@ fun QuestionGameScreen(
             currentQuestionIndex++
             shuffledOptions = options[currentQuestionIndex].shuffled()
             showResult = false
-            startTimer() // Reinicia o timer para a próxima pergunta
+            startTimer()
         } else {
-            finished = true // Marca o quiz como concluído
+            finished = true
         }
     }
 
@@ -201,7 +237,6 @@ fun QuestionGameScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 if (!isNameSaved) {
-                    // Campo de entrada para o nome do usuário
                     TextField(
                         value = userName,
                         onValueChange = { userName = it },
