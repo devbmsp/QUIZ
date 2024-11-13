@@ -124,6 +124,25 @@ fun QuestionGameScreen(
     var userName by remember { mutableStateOf("") }
     var isNameSaved by remember { mutableStateOf(false) }
 
+    val questionImages = listOf(
+        R.drawable.question1,
+        R.drawable.question2,
+        R.drawable.question3,
+        R.drawable.question4,
+        R.drawable.question5,
+        R.drawable.question6,
+        R.drawable.question7,
+        R.drawable.question8,
+        R.drawable.question9,
+        R.drawable.question10,
+        R.drawable.question11,
+        R.drawable.question12,
+        R.drawable.question13,
+        R.drawable.question14,
+        R.drawable.question15,
+
+    )
+
     fun startTimer() {
         startTime = System.currentTimeMillis()
     }
@@ -179,12 +198,13 @@ fun QuestionGameScreen(
                 )
 
                 Image(
-                    painter = painterResource(id = R.drawable.exemplo),
+                    painter = painterResource(id = questionImages[currentQuestionIndex]),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .width(200.dp)
-                        .height(200.dp)
+                        .width(400.dp)
+                        .height(400.dp)
+                        .padding(16.dp)
                 )
 
                 shuffledOptions.forEach { option ->
